@@ -29,4 +29,4 @@ class LetterCountTest(unittest.TestCase):
     self.assertEqual(count_letter_in_string(longString, 'l'), letter_l_counter)
 
 if __name__ == '__main__':
-	unittest.main()
+  unittest.main()
