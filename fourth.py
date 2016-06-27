@@ -1,53 +1,71 @@
-# Create a Rocket class
-# It should take 3 parameters in its constructor
-# 1st parameter: the type of the rocket as a string, "falcon1" or "falcon9"
-# 2nd parameter: the starting fuel level as a number
-# 3rd parameter: number of launches as a number
-#
-# It should have 3 methods:
-#
-# launch()
-# it should use 1 fuel if it's a falcon1 and 9 if it's a falcon9
-# it should increment the launches by one
-#
-# refill()
-# it should refill the rocket's fuel level to 5 if falcon1 and to 20 if falcon9
-# it should return the used fuel
-# example: if the rocket is a falcon1 and has fuel level 3, then it should return 2
-#
-# getStats()
-# it should return its stats as a string like: "name: falcon9, fuel: 11"
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
-# Create a SpaceX class
-# it should take 1 parameter in its constructor
-# 1st parameter: the stored fuel
-#
-# it should have 4 methods:
-#
-# addRocket(rocket)
-# it should add a new rocket to SpaceX that is given in its first parameter
-#
-# refill_all()
-# it should refill all of its rockets with fuel and substract the needed fuel from the storage
-#
-# launch_all()
-# it should launch all the rockets
-#
-# buy_fuel(amount)
-# it should increase stored fuel by amount
-#
-# getStats()
-# it should return its stats as a sting like: "rockets: 3, fuel: 100, launches: 1"
+class Rocket(object):
+    """basic rocket class with two possible types"""
+
+    def __init__(self, rocket_type='', starting_fuel=0, launches=0):
+        self.rocket_type = rocket_type
+        self.fuel = starting_fuel
+        self.launches = launches
+        self.setDefaultsForRocket()
+
+    def setDefaultsForRocket(self):
+        if self.rocket_type == 'falcon1':
+            self.fuel_per_launch = 1
+            self.refillTop = 5
+        elif self.rocket_type == 'falcon9':
+            self.fuel_per_launch = 9
+            self.refillTop = 20
+
+    def launch(self):
+        self.fuel -= self.fuel_per_launch
+        self.launches += 1
+
+    def refill(self):
+        used_fuel = self.refillTop - self.fuel
+        self.fuel = self.refillTop
+        return used_fuel
+
+    def getStats(self):
+        return "name: {}, fuel: {}".format(self.rocket_type, self.fuel)
 
 
-# The following code should work with the classes
+class SpaceX(Rocket):
+    """Rocket carrier spaceship, control rockets added to it"""
+
+    def __init__(self, storedFuel):
+        super().__init__()
+        self.storedFuel = storedFuel
+        self.rockets = []
+        self.rockets_launched = 0
+
+    def getLaunches(self):
+        self.rockets_launched = sum([rocket.launches for rocket in self.rockets])
+
+    def addRocket(self, rocket):
+        self.rockets.append(rocket)
+        self.getLaunches()
+
+    def refill_all(self):
+        fuelFromSTorage = sum([rocket.refill() for rocket in self.rockets])
+        self.storedFuel -= fuelFromSTorage
+
+    def launch_all(self):
+        [rocket.launch() for rocket in self.rockets]
+        self.getLaunches()
+
+    def buy_fuel(self, amount):
+        self.storedFuel += amount
+
+    def getStats(self):
+        return "rockets: {}, fuel: {}, launches: {}".format(len(self.rockets), self.storedFuel, self.rockets_launched)
 
 
 space_x = SpaceX(100)
 falcon1 = Rocket('falcon1', 0, 0)
 falcon9 = Rocket('falcon9', 0, 0)
 returned_falcon9 = Rocket('falcon9', 11, 1)
-
 print(returned_falcon9.getStats()) # name: falcon9, fuel: 11
 
 space_x.addRocket(falcon1)

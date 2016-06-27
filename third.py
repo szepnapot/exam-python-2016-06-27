@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 # Write unittests for this function:
 
 def count_letter_in_string(string, letter):
